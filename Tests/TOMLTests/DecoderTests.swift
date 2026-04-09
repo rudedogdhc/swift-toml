@@ -46,6 +46,41 @@ struct TOMLDecoderTests {
         #expect(config.url == URL(string: "https://example.com/"))
     }
 
+    @Test func decodeURLFromSingleValueContainer() throws {
+        struct Container: Codable {
+            let url: URL
+            init(from decoder: Decoder) throws {
+                let container = try decoder.singleValueContainer()
+                self.url = try container.decode(URL.self)
+            }
+        }
+
+        struct Config: Codable {
+            let container: Container
+        }
+
+        let toml = """
+            container = "https://example.com/"
+            """
+
+
+        let config = try TOMLDecoder().decode(Config.self, from: toml)
+        #expect(config.container.url.absoluteString == "https://example.com/")
+    }
+
+    @Test func decodeURLFromUnkeyedContainer() throws {
+        let toml = """
+            urls = ["https://example.com/", "https://swift.org/"]
+            """
+
+        struct Config: Codable {
+            let urls: [URL]
+        }
+
+        let config = try TOMLDecoder().decode(Config.self, from: toml)
+        #expect(config.urls == [URL(string: "https://example.com/")!, URL(string: "https://swift.org/")!])
+    }
+
     @Test func decodeAllIntegerTypes() throws {
         let toml = """
             int = 42

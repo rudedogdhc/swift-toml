@@ -891,6 +891,17 @@ private struct TOMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
             }
             return t as! T
         }
+        if type == URL.self {
+            guard case .string(let s) = value else {
+                throw typeMismatchError(type, value: value)
+            }
+            guard let u = URL(string: s) else {
+                throw DecodingError.dataCorrupted(
+                    .init(codingPath: codingPath, debugDescription: "Could not decode \(s) as URL")
+                )
+            }
+            return u as! T
+        }
 
         let decoder = _TOMLDecoder(
             value: value,
@@ -1096,6 +1107,17 @@ private struct TOMLSingleValueDecodingContainer: SingleValueDecodingContainer {
                 throw typeMismatchError(type)
             }
             return t as! T
+        }
+        if type == URL.self {
+            guard case .string(let s) = value else {
+                throw typeMismatchError(type)
+            }
+            guard let u = URL(string: s) else {
+                throw DecodingError.dataCorrupted(
+                    .init(codingPath: codingPath, debugDescription: "Could not decode \(s) as URL")
+                )
+            }
+            return u as! T
         }
 
         let decoder = _TOMLDecoder(
