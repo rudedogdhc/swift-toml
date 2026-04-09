@@ -96,7 +96,7 @@ struct EncoderTests {
         #expect(toml.contains("nan = nan"))
     }
 
-    @Test func encodeURLs() throws {
+    @Test func encodeURL() throws {
         struct URLs: Codable {
             let url: URL
         }
