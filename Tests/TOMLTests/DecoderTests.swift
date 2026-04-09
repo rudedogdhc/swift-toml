@@ -32,6 +32,20 @@ struct TOMLDecoderTests {
         #expect(config.ratio == 3.14)
     }
 
+    @Test func decodeURL() throws {
+        let toml = """
+            url = "https://example.com/"
+            """
+
+        struct Config: Codable, Equatable {
+            let url: URL
+        }
+
+        let decoder = TOMLDecoder()
+        let config = try decoder.decode(Config.self, from: toml)
+        #expect(config.url == URL(string: "https://example.com/"))
+    }
+
     @Test func decodeAllIntegerTypes() throws {
         let toml = """
             int = 42

@@ -627,6 +627,20 @@ private struct TOMLKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingContaine
             }
             return t as! T
         }
+        if type == URL.self {
+            guard case .string(let s) = value else {
+                throw typeMismatchError(type, value: value, key: key)
+            }
+            guard let u = URL(string: s) else {
+                throw DecodingError.dataCorrupted(
+                    .init(
+                        codingPath: codingPath + [key],
+                        debugDescription: "Could not decode \(s) as URL"
+                    )
+                )
+            }
+            return u as! T
+        }
 
         let decoder = _TOMLDecoder(
             value: value,

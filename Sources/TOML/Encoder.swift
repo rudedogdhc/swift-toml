@@ -500,6 +500,9 @@ private extension _TOMLEncoder {
         if let localTime = value as? LocalTime {
             return .localTime(localTime)
         }
+        if let url = value as? URL {
+            return .string(url.absoluteString)
+        }
 
         let encoder = _TOMLEncoder(codingPath: codingPath, userInfo: userInfo, options: options)
         try value.encode(to: encoder)

@@ -96,6 +96,16 @@ struct EncoderTests {
         #expect(toml.contains("nan = nan"))
     }
 
+    @Test func encodeURLs() throws {
+        struct URLs: Codable {
+            let url: URL
+        }
+        let value = URLs(url: URL(string: "https://example.com/")!)
+        let encoder = TOMLEncoder()
+        let toml = try encoder.encodeToString(value)
+        #expect(toml.contains(#"url = "https://example.com/""#))
+    }
+
     // MARK: - String Escaping
 
     @Test func encodeStringEscaping() throws {
